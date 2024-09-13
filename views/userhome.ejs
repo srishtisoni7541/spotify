@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Music App Home</title>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Music App</h1>
+        <div class="flex items-center space-x-4">
+            <a href="/users/profile" class="text-gray-700">Profile</a>
+            <button class="text-sm text-white bg-blue-500 px-4 py-2 rounded">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-4">
+
+        <!-- Search Bar -->
+        <div class="mb-6">
+            <input type="text" placeholder="Search for music, artists, or albums..." class="w-full p-2 border rounded shadow-sm">
+        </div>
+
+        <!-- Music Options -->
+        <div class="mt-6">
+            <h2 class="text-lg font-semibold mb-4">Music Options</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-4 rounded shadow-md">
+                    <h3 class="text-md font-semibold mb-2">Top Songs</h3>
+                    <ul>
+                        <li><a href="#" class="text-blue-500">Song Title 1</a></li>
+                        <li><a href="#" class="text-blue-500">Song Title 2</a></li>
+                        <li><a href="#" class="text-blue-500">Song Title 3</a></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded shadow-md">
+                    <h3 class="text-md font-semibold mb-2">New Releases</h3>
+                    <ul>
+                        <li><a href="#" class="text-blue-500">New Song 1</a></li>
+                        <li><a href="#" class="text-blue-500">New Song 2</a></li>
+                        <li><a href="#" class="text-blue-500">New Song 3</a></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded shadow-md">
+                    <h3 class="text-md font-semibold mb-2">Recommended for You</h3>
+                    <ul>
+                        <li><a href="#" class="text-blue-500">Recommended Song 1</a></li>
+                        <li><a href="#" class="text-blue-500">Recommended Song 2</a></li>
+                        <li><a href="#" class="text-blue-500">Recommended Song 3</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artist Section -->
+        <div class="mt-10">
+            <h2 class="text-lg font-semibold mb-4">Artists</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
+                    <img src="https://via.placeholder.com/100" alt="Artist 1" class="rounded-full w-24 h-24 mb-2">
+                    <h4 class="text-md font-semibold">Artist 1</h4>
+                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
+                </div>
+                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
+                    <img src="https://via.placeholder.com/100" alt="Artist 2" class="rounded-full w-24 h-24 mb-2">
+                    <h4 class="text-md font-semibold">Artist 2</h4>
+                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
+                </div>
+                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
+                    <img src="https://via.placeholder.com/100" alt="Artist 3" class="rounded-full w-24 h-24 mb-2">
+                    <h4 class="text-md font-semibold">Artist 3</h4>
+                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
+                </div>
+                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
+                    <img src="https://via.placeholder.com/100" alt="Artist 4" class="rounded-full w-24 h-24 mb-2">
+                    <h4 class="text-md font-semibold">Artist 4</h4>
+                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
+                </div>
+                <!-- Add more artists as needed -->
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
