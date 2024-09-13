@@ -3,83 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <title>Artist Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
 </head>
 <body class="bg-gray-100">
 
   <!-- Navbar -->
-  <nav class="bg-white shadow-md p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold">Music App - Artist Dashboard</h1>
-    <div>
-      <button class="text-sm text-white bg-blue-500 px-4 py-2 rounded">Logout</button>
+  <nav class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Music App - Artist Dashboard</h1>
+      <button class="bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-indigo-100 transition duration-300">Logout</button>
     </div>
   </nav>
 
   <!-- Main Container -->
-  <div class="container mx-auto p-4">
+  <div class="container mx-auto p-6">
 
     <!-- Profile Section -->
-    <div class="flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg">
-      <img src="https://via.placeholder.com/100" alt="Artist Profile Picture" class="rounded-full w-24 h-24">
-      <div>
-        <h2 class="text-xl font-semibold">Artist Name</h2>
-        <p class="text-gray-600">Welcome back! Manage your music and connect with fans.</p>
-        <button class="mt-2 text-sm text-white bg-blue-500 px-4 py-2 rounded">Change Profile Picture</button>
+    <div class="bg-white rounded-lg shadow-xl overflow-hidden mb-6">
+      <div class="md:flex">
+        <div class="md:flex-shrink-0">
+          <img src="https://via.placeholder.com/150" alt="Artist Profile Picture" class="h-48 w-full object-cover md:w-48">
+        </div>
+        <div class="p-8">
+          <h2 class="text-2xl font-semibold text-gray-800">Artist Name</h2>
+          <p class="mt-2 text-gray-600">Welcome back! Manage your music and connect with fans.</p>
+          <button class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Change Profile Picture
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Upload Section -->
-    <div class="mt-6 p-4 bg-white shadow-md rounded-lg">
-      <h3 class="text-lg font-semibold mb-2">Upload New Music or Album</h3>
-      <form class="space-y-4" action="/music/upload" method="post">
-        <input type="text" name="title"  class="w-full p-2 border rounded" placeholder="Music/Album Title" required>
-
-        <input type="text"  class="w-full p-2 border rounded" name="artist" placeholder="artist name" required>
-        <input type="file"  class="block w-full text-sm text-gray-500
-          file:mr-4 file:py-2 file:px-4
-          file:rounded file:border-0
-          file:text-sm file:font-semibold
-          file:bg-blue-500 file:text-white
-          hover:file:bg-blue-600">
-        <button class="w-full text-white bg-green-500 px-4 py-2 rounded">Upload</button>
-      </form>
+    <div class="bg-white rounded-lg shadow-xl overflow-hidden mb-6">
+      <div class="p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Upload New Music or Album</h3>
+        <form class="space-y-4" action="/music/upload" method="post">
+          <input type="text" name="title" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Music/Album Title" required>
+          <input type="text" name="artist" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Artist Name" required>
+          <div class="flex items-center justify-center w-full">
+            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-gray-500">MP3, WAV or OGG (MAX. 10MB)</p>
+              </div>
+              <input id="dropzone-file" type="file" class="hidden" />
+            </label>
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+            Upload
+          </button>
+        </form>
+      </div>
     </div>
 
     <!-- Stats Section -->
-    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
       <!-- Music Analytics -->
-      <div class="p-4 bg-white shadow-md rounded-lg">
-        <h3 class="text-lg font-semibold mb-2">Music Analytics</h3>
-        <ul>
-          <li>Plays: <span class="font-bold">1,234</span></li>
-          <li>Likes: <span class="font-bold">567</span></li>
-          <li>Shares: <span class="font-bold">89</span></li>
-        </ul>
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Music Analytics</h3>
+          <ul class="space-y-2">
+            <li class="flex justify-between items-center">
+              <span class="text-gray-600">Plays:</span>
+              <span class="font-bold text-indigo-600">1,234</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-600">Likes:</span>
+              <span class="font-bold text-indigo-600">567</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-600">Shares:</span>
+              <span class="font-bold text-indigo-600">89</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Manage Existing Music -->
-      <div class="p-4 bg-white shadow-md rounded-lg">
-        <h3 class="text-lg font-semibold mb-2">Manage Your Music</h3>
-        <ul>
-          <li class="flex justify-between items-center">
-            <span>Track Title 1</span>
-            <button class="text-red-500">Delete</button>
-          </li>
-          <li class="flex justify-between items-center">
-            <span>Track Title 2</span>
-            <button class="text-red-500">Delete</button>
-          </li>
-          <!-- Add more tracks as needed -->
-        </ul>
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Manage Your Music</h3>
+          <ul class="space-y-2">
+            <li class="flex justify-between items-center">
+              <span class="text-gray-600">Track Title 1</span>
+              <button class="text-red-500 hover:text-red-700 transition duration-300">Delete</button>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="text-gray-600">Track Title 2</span>
+              <button class="text-red-500 hover:text-red-700 transition duration-300">Delete</button>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Fan Interactions -->
-      <div class="p-4 bg-white shadow-md rounded-lg">
-        <h3 class="text-lg font-semibold mb-2">Fan Interactions</h3>
-        <p>You have <span class="font-bold">15 new messages</span> from fans!</p>
-        <button class="text-white bg-blue-500 px-4 py-2 mt-2 rounded">View Messages</button>
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Fan Interactions</h3>
+          <p class="text-gray-600">You have <span class="font-bold text-indigo-600">15 new messages</span> from fans!</p>
+          <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+            View Messages
+          </button>
+        </div>
       </div>
 
     </div>

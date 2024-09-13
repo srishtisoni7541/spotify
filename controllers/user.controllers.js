@@ -60,19 +60,19 @@ const loginUser = async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(400).json({ message: 'Invalid email or password.' });
 
-    const token = jwt.sign({ id: user._id, email: user.email }, 'hello', { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, email: user.email }, 'hello', { expiresIn: '24h' });
     
     // Set the token as an HTTP-only cookie
     res.cookie('token', token, { 
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      maxAge: 3600000 // 1 hour in milliseconds
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
     });
 
     console.log('Token set in cookie:', token);
 
-    // For testing purposes, you can also send the token in the response
-    res.json({ message: 'Login successful', token: token });
+    // Redirect to home page after successful login
+    res.redirect('/users/home');
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error.' });

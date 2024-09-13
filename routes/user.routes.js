@@ -28,6 +28,9 @@ router.get('/register', (req, res) => {
 router.get('/artist', authenticateToken, (req, res) => {
     res.render('artistdashboard');
 });
+router.get('/login',function(req,res){
+    res.render('login')
+})
 
 // Route to Render User Home
 router.get('/home', authenticateToken, (req, res) => {
@@ -36,6 +39,7 @@ router.get('/home', authenticateToken, (req, res) => {
 
 // Route to Render User Profile
 router.get('/profile', authenticateToken, async (req, res) => {
+  console.log('User in profile route:', req.user);
   try {
     const user = await User.findById(req.user.id).populate('playlists');
     if (!user) {
@@ -56,6 +60,9 @@ router.post('/login', loginUser);
 
 // Profile picture upload route
 router.post('/upload-profile-pic', authenticateToken, upload.single('profilePic'), uploadProfilePic);
+
+// // Music upload route (if you have one)
+// router.post('/upload-music', authenticateToken, upload.single('musicFile'), uploadMusic);
 
 // Logout Route
 router.get('/logout', (req, res) => {
