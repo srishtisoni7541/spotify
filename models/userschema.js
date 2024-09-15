@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   playlists: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Playlist',
+    name: String,
+    tracks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Track' }]
   }],
   createdAt: {
     type: Date,

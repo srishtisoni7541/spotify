@@ -13,7 +13,9 @@
         <h1 class="text-2xl font-bold">Music App</h1>
         <div class="flex items-center space-x-4">
             <a href="/users/profile" class="text-gray-700">Profile</a>
-            <button class="text-sm text-white bg-blue-500 px-4 py-2 rounded">Logout</button>
+            <form action="/auth/logout" method="POST">
+                <button type="submit" class="text-sm text-white bg-blue-500 px-4 py-2 rounded">Logout</button>
+            </form>
         </div>
     </nav>
 
@@ -22,69 +24,89 @@
 
         <!-- Search Bar -->
         <div class="mb-6">
-            <input type="text" placeholder="Search for music, artists, or albums..." class="w-full p-2 border rounded shadow-sm">
+            <input type="text" id="searchInput" placeholder="Search for tracks, artists, or albums..." class="w-full p-2 border rounded shadow-sm">
         </div>
 
-        <!-- Music Options -->
+        <!-- All Tracks Section -->
         <div class="mt-6">
-            <h2 class="text-lg font-semibold mb-4">Music Options</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-4 rounded shadow-md">
-                    <h3 class="text-md font-semibold mb-2">Top Songs</h3>
-                    <ul>
-                        <li><a href="#" class="text-blue-500">Song Title 1</a></li>
-                        <li><a href="#" class="text-blue-500">Song Title 2</a></li>
-                        <li><a href="#" class="text-blue-500">Song Title 3</a></li>
-                    </ul>
-                </div>
-                <div class="bg-white p-4 rounded shadow-md">
-                    <h3 class="text-md font-semibold mb-2">New Releases</h3>
-                    <ul>
-                        <li><a href="#" class="text-blue-500">New Song 1</a></li>
-                        <li><a href="#" class="text-blue-500">New Song 2</a></li>
-                        <li><a href="#" class="text-blue-500">New Song 3</a></li>
-                    </ul>
-                </div>
-                <div class="bg-white p-4 rounded shadow-md">
-                    <h3 class="text-md font-semibold mb-2">Recommended for You</h3>
-                    <ul>
-                        <li><a href="#" class="text-blue-500">Recommended Song 1</a></li>
-                        <li><a href="#" class="text-blue-500">Recommended Song 2</a></li>
-                        <li><a href="#" class="text-blue-500">Recommended Song 3</a></li>
-                    </ul>
-                </div>
+            <h2 class="text-lg font-semibold mb-4">All Tracks</h2>
+            <% if (typeof error !== 'undefined') { %>
+                <p class="text-red-500"><%= error %></p>
+            <% } %>
+            <div id="trackList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-[url('<%=tracks.coverImage%>')] gap-6">
+                <% if (typeof tracks !== 'undefined' && tracks.length > 0) { %>
+                    <% tracks.forEach(track => { %>
+                        <div class="bg-white p-4 rounded shadow-md">
+                            <h3 class="text-md font-semibold mb-2"><%= track.title %></h3>
+                            <p class="text-sm text-gray-600 mb-2">Artist: <%= track.artist %></p>
+                            <p class="text-sm text-gray-600 mb-2">Album: <%= track.album %></p>
+                            <p class="text-sm text-gray-600 mb-2">Genre: <%= track.genre %></p>
+                            <button class="play-btn text-sm text-white bg-green-500 px-4 py-2 rounded" data-src="<%= track.file %>">Play</button>
+                            <button class="add-to-playlist-btn text-sm text-white bg-blue-500 px-4 py-2 rounded ml-2" data-id="<%= track._id %>">Add to Playlist</button>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No tracks available at the moment.</p>
+                <% } %>
             </div>
         </div>
 
-        <!-- Artist Section -->
-        <div class="mt-10">
-            <h2 class="text-lg font-semibold mb-4">Artists</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
-                    <img src="https://via.placeholder.com/100" alt="Artist 1" class="rounded-full w-24 h-24 mb-2">
-                    <h4 class="text-md font-semibold">Artist 1</h4>
-                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
-                </div>
-                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
-                    <img src="https://via.placeholder.com/100" alt="Artist 2" class="rounded-full w-24 h-24 mb-2">
-                    <h4 class="text-md font-semibold">Artist 2</h4>
-                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
-                </div>
-                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
-                    <img src="https://via.placeholder.com/100" alt="Artist 3" class="rounded-full w-24 h-24 mb-2">
-                    <h4 class="text-md font-semibold">Artist 3</h4>
-                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
-                </div>
-                <div class="bg-white p-4 rounded shadow-md flex flex-col items-center">
-                    <img src="https://via.placeholder.com/100" alt="Artist 4" class="rounded-full w-24 h-24 mb-2">
-                    <h4 class="text-md font-semibold">Artist 4</h4>
-                    <button class="mt-2 text-sm text-white bg-green-500 px-4 py-2 rounded">View Songs</button>
-                </div>
-                <!-- Add more artists as needed -->
-            </div>
+        <!-- Audio Player -->
+        <div id="audioPlayerContainer" class="fixed bottom-0 left-0 right-0 bg-white shadow-md p-4 hidden">
+            <audio id="audioPlayer" controls class="w-full"></audio>
         </div>
 
     </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const trackList = document.getElementById('trackList');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const audioPlayerContainer = document.getElementById('audioPlayerContainer');
+        const searchInput = document.getElementById('searchInput');
+
+        // Play track
+        trackList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('play-btn')) {
+                audioPlayer.src = e.target.dataset.src;
+                audioPlayer.play();
+                audioPlayerContainer.classList.remove('hidden');
+            }
+        });
+
+        // Add to playlist
+        trackList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-to-playlist-btn')) {
+                const trackId = e.target.dataset.id;
+                fetch('/music/add-to-playlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ trackId }),
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => console.error('Error adding to playlist:', error));
+            }
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            Array.from(trackList.children).forEach(trackElement => {
+                const title = trackElement.querySelector('h3').textContent.toLowerCase();
+                const artist = trackElement.querySelector('p:nth-child(2)').textContent.toLowerCase();
+                const album = trackElement.querySelector('p:nth-child(3)').textContent.toLowerCase();
+                if (title.includes(searchTerm) || artist.includes(searchTerm) || album.includes(searchTerm)) {
+                    trackElement.style.display = '';
+                } else {
+                    trackElement.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>

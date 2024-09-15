@@ -33,15 +33,15 @@ router.get('/login',function(req,res){
 })
 
 // Route to Render User Home
-router.get('/home', authenticateToken, (req, res) => {
-    res.render('userhome');
-});
+// router.get('/home', authenticateToken, (req, res) => {
+//     res.render('userhome');
+// });
 
 // Route to Render User Profile
 router.get('/profile', authenticateToken, async (req, res) => {
   console.log('User in profile route:', req.user);
   try {
-    const user = await User.findById(req.user.id).populate('playlists');
+    const user = await User.findOne({email:req.user.email});
     if (!user) {
       return res.status(404).send('User not found');
     }
@@ -67,7 +67,7 @@ router.post('/upload-profile-pic', authenticateToken, upload.single('profilePic'
 // Logout Route
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
-  res.redirect('/login'); // Redirect to login page after logout
+  res.redirect('/users/login'); // Redirect to login page after logout
 });
 
 module.exports = router;

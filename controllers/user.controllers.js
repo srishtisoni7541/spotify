@@ -39,7 +39,7 @@ const registerUser = async (req, res) => {
      if (artistStatus) {
       res.redirect('/users/artist');  // Redirect to artist dashboard if artist
     } else {
-      res.redirect('/home');  // Redirect to home page if regular user
+      res.redirect('/music/home');  // Redirect to home page if regular user
     }
 
     // res.status(201).json({ message: 'User registered successfully' });
@@ -60,18 +60,22 @@ const loginUser = async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(400).json({ message: 'Invalid email or password.' });
 
-    const token = jwt.sign({ id: user._id, email: user.email }, 'hello', { expiresIn: '24h' });
+    const token = jwt.sign(
+      { 
+        userId: user._id, 
+        email: user.email,
+        isArtist: user.isArtist  // Include isArtist in the token
+      }, 
+      'hello', 
+      { expiresIn: '24h' }
+    );
     
-    // Set the token as an HTTP-only cookie
     res.cookie('token', token, { 
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000
     });
 
-    console.log('Token set in cookie:', token);
-
-    // Redirect to home page after successful login
     res.redirect('/users/home');
   } catch (error) {
     console.error('Login error:', error);
@@ -86,7 +90,7 @@ const uploadProfilePic = async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({email:req.user.email});
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -103,7 +107,7 @@ const uploadProfilePic = async (req, res) => {
     user.profileImage = req.file.filename;
     await user.save();
 
-    res.redirect('/profile'); // Redirect back to the profile page
+    res.redirect('/users/profile'); // Redirect back to the profile page
   } catch (error) {
     console.error('Error uploading profile picture:', error);
     res.status(500).json({ message: 'Error uploading profile picture' });

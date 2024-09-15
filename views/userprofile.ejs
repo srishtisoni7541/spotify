@@ -3,84 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>User Profile - Music App</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Poppins', sans-serif; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>User Profile</title>
 </head>
 <body class="bg-gray-100">
-
-    <!-- Navbar -->
-    <nav class="bg-indigo-600 text-white shadow-lg">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Music App</h1>
-            <div class="flex items-center space-x-4">
-                <a href="/home" class="hover:text-indigo-200 transition duration-300">Home</a>
-                <a href="/logout" class="bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-indigo-100 transition duration-300">Logout</a>
-            </div>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">User Profile</h1>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold mb-2"><%= user.name %></h2>
+            <p class="text-gray-600">Email: <%= user.email %></p>
+            <!-- Add other user details as needed -->
         </div>
-    </nav>
 
-    <!-- Main Container -->
-    <div class="container mx-auto p-6">
-        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
-            <!-- Profile Header -->
-            <div class="bg-indigo-600 text-white p-6">
-                <div class="flex items-center space-x-4">
-                    <img id="profile-pic" src="/uploads/<%= user.profileImage %>" alt="Profile Picture" class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
-                    <div>
-                        <h2 class="text-2xl font-bold"><%= user.name %></h2>
-                        <p class="text-indigo-200"><%= user.email %></p>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Your Playlists</h2>
+            <% if (user.playlists && user.playlists.length > 0) { %>
+                <% user.playlists.forEach(playlist => { %>
+                    <div class="mb-4">
+                        <h3 class="text-lg font-semibold"><%= playlist.name %></h3>
+                        <ul class="list-disc pl-5">
+                            <% playlist.tracks.forEach(track => { %>
+                                <li><%= track.title %> - <%= track.artist %></li>
+                            <% }); %>
+                        </ul>
                     </div>
-                </div>
-            </div>
-
-            <!-- Profile Content -->
-            <div class="p-6">
-                <!-- Upload Profile Picture Form -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-semibold mb-4">Update Profile Picture</h3>
-                    <form action="/users/upload-profile-pic" method="POST" enctype="multipart/form-data" class="flex items-center space-x-4">
-                        <input type="file" name="profilePic" class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition duration-300">Upload Picture</button>
-                    </form>
-                </div>
-
-                <!-- Add Music to Playlist Section -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-semibold mb-4">Add Music to Your Playlist</h3>
-                    <form action="/add-to-playlist" method="POST" class="flex space-x-4">
-                        <input type="text" name="searchMusic" placeholder="Search for music..." class="flex-grow p-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600">
-                        <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition duration-300">Search & Add</button>
-                    </form>
-                </div>
-
-                <!-- User Playlist Section -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Your Playlist</h3>
-                    <ul class="space-y-4">
-                        <li class="flex justify-between items-center bg-gray-50 p-4 rounded-lg">
-                            <span class="font-medium">Song Title 1</span>
-                            <div class="flex items-center space-x-2">
-                                <button class="text-sm bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition duration-300">Download</button>
-                                <button class="text-sm bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Remove</button>
-                            </div>
-                        </li>
-                        <li class="flex justify-between items-center bg-gray-50 p-4 rounded-lg">
-                            <span class="font-medium">Song Title 2</span>
-                            <div class="flex items-center space-x-2">
-                                <button class="text-sm bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition duration-300">Download</button>
-                                <button class="text-sm bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300">Remove</button>
-                            </div>
-                        </li>
-                        <!-- Add more songs as needed -->
-                    </ul>
-                </div>
-            </div>
+                <% }); %>
+            <% } else { %>
+                <p>You haven't created any playlists yet.</p>
+            <% } %>
         </div>
     </div>
-
 </body>
 </html>

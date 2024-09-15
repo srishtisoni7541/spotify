@@ -8,16 +8,25 @@ const playlistSchema = new mongoose.Schema({
   album: {
     type: String,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    // required: true,
+  },
+  artist:{
+    type:String,
+
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    // required: true,
   },
   tracks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Track',
   }],
-  poster:{
+  coverImage:{
     type:String,
   },
   createdAt: {
