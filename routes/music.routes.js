@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const {deleteMusic,addMusic,addToPlaylist,searchMusic}=require('../controllers/musicController');
+const {deleteMusic,addMusic,addToPlaylist,searchMusic,deleteTrackFromPlaylist}=require('../controllers/musicController');
 const { authenticateToken } = require('../middlewares/auth');
 const Track = require('../models/trackschema'); // Import the Track model
 
@@ -34,19 +34,17 @@ const upload = multer({
 // New route to handle displaying all tracks on the home page
 router.get('/home', authenticateToken, async (req, res) => {
   try {
-    // Fetch all tracks from the database
-    const allTracks = await Track.find();
-
+    // Fetch only active (non-deleted) tracks
+    const allTracks = await Track.find({ isDeleted: { $ne: true } });
+    
     console.log('Fetched tracks:', allTracks); // Debug log
-
-    // Render the userhome template with the tracks data
+    
     res.render('userhome', { 
       user: req.user, 
-      tracks: allTracks || [] // Use 'tracks' instead of 'music'
+      tracks: allTracks || []
     });
   } catch (error) {
     console.error('Error fetching tracks for home page:', error);
-    // Render the userhome template with an empty tracks array in case of error
     res.render('userhome', { 
       user: req.user, 
       tracks: [],
@@ -92,13 +90,14 @@ router.post('/upload', authenticateToken, upload.single('musicFile'), async (req
 });
 
 // Route to delete music
-router.delete('/delete/:musicId', deleteMusic);
+router.get('/delete/:musicId', authenticateToken, deleteMusic);
+router.delete('/playlist/:playlistId/track/:trackId', authenticateToken, deleteTrackFromPlaylist);
 
 // Route to search music
 router.get('/search', searchMusic);
 
 // Route to add music to a user's playlist
-router.post('/add-to-playlist', addToPlaylist);
+router.post('/add-to-playlist', authenticateToken, addToPlaylist);
 
 // Route to add music
 router.post('/add', addMusic);

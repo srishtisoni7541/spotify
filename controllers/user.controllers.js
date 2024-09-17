@@ -76,7 +76,7 @@ const loginUser = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000
     });
 
-    res.redirect('/users/home');
+    res.redirect('/music/home');
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -111,6 +111,28 @@ const uploadProfilePic = async (req, res) => {
   } catch (error) {
     console.error('Error uploading profile picture:', error);
     res.status(500).json({ message: 'Error uploading profile picture' });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, email, bio } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.name = name;
+    user.email = email;
+    user.bio = bio;
+
+    await user.save();
+
+    res.json({ message: 'Profile updated successfully' });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ message: 'Server error while updating profile' });
   }
 };
 

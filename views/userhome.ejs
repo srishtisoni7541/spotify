@@ -13,7 +13,7 @@
         <h1 class="text-2xl font-bold">Music App</h1>
         <div class="flex items-center space-x-4">
             <a href="/users/profile" class="text-gray-700">Profile</a>
-            <form action="/auth/logout" method="POST">
+            <form action="/logout">
                 <button type="submit" class="text-sm text-white bg-blue-500 px-4 py-2 rounded">Logout</button>
             </form>
         </div>
@@ -41,8 +41,11 @@
                             <p class="text-sm text-gray-600 mb-2">Artist: <%= track.artist %></p>
                             <p class="text-sm text-gray-600 mb-2">Album: <%= track.album %></p>
                             <p class="text-sm text-gray-600 mb-2">Genre: <%= track.genre %></p>
-                            <button class="play-btn text-sm text-white bg-green-500 px-4 py-2 rounded" data-src="<%= track.file %>">Play</button>
-                            <button class="add-to-playlist-btn text-sm text-white bg-blue-500 px-4 py-2 rounded ml-2" data-id="<%= track._id %>">Add to Playlist</button>
+                            <div class="flex items-center space-x-2">
+                                <button class="play-btn text-sm text-white bg-green-500 px-4 py-2 rounded" data-src="<%= track.file %>">Play</button>
+                                <input type="text" class="track-note border rounded px-2 py-1 text-sm " placeholder="Enter your playlist name...">
+                                <button class="add-to-playlist-btn text-sm text-white bg-blue-500 px-4 py-2 rounded" data-id="<%= track._id %>">Add to Playlist</button>
+                            </div>
                         </div>
                     <% }); %>
                 <% } else { %>
@@ -50,6 +53,21 @@
                 <% } %>
             </div>
         </div>
+
+        
+    <!-- Add to Playlist Modal -->
+    <div id="addToPlaylistModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-8 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4">Add to Playlist</h3>
+            <select id="playlistSelect" class="w-full p-2 mb-4 border rounded">
+                <!-- Playlist options will be dynamically added here -->
+            </select>
+            <div class="flex justify-end">
+                <button onclick="closeAddToPlaylistModal()" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
+                <button onclick="addToPlaylist()" class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
+            </div>
+        </div>
+    </div>
 
         <!-- Audio Player -->
         <div id="audioPlayerContainer" class="fixed bottom-0 left-0 right-0 bg-white shadow-md p-4 hidden">

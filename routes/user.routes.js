@@ -4,6 +4,8 @@ const { authenticateToken } = require('../middlewares/auth');
 const multer = require('multer');
 const path = require('path');
 const User = require('../models/userschema');
+const Playlist = require('../models/playlistschema');
+const Track=require('../models/trackschema')
 
 const router = express.Router();
 
@@ -39,17 +41,27 @@ router.get('/login',function(req,res){
 
 // Route to Render User Profile
 router.get('/profile', authenticateToken, async (req, res) => {
-  console.log('User in profile route:', req.user);
-  try {
-    const user = await User.findOne({email:req.user.email});
-    if (!user) {
-      return res.status(404).send('User not found');
+    try {
+        const user = await User.findById(req.user._id)
+            .populate({
+                path: 'playlists',
+                populate: {
+                    path: 'tracks.trackId',
+                    model: 'Track',
+                    select: 'title artist file'
+                }
+            })
+            .lean();
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        res.render('userprofile', { user });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).send('Server error');
     }
-    res.render('userprofile', { user: user });
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    res.status(500).send('Server error');
-  }
 });
 
 // User Registration Route
