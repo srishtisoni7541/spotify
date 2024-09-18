@@ -70,8 +70,6 @@ router.post('/register', registerUser);
 // User Login Route
 router.post('/login', loginUser);
 
-// Profile picture upload route
-router.post('/upload-profile-pic', authenticateToken, upload.single('profilePic'), uploadProfilePic);
 
 // // Music upload route (if you have one)
 // router.post('/upload-music', authenticateToken, upload.single('musicFile'), uploadMusic);
@@ -80,6 +78,35 @@ router.post('/upload-profile-pic', authenticateToken, upload.single('profilePic'
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
   res.redirect('/users/login'); // Redirect to login page after logout
+});
+
+// Update Profile Route
+router.post('/update-profile', authenticateToken,  upload.single('profilePicture'), async (req, res) => {
+    try {
+        const updatedProfile = {
+            name: req.body.name,
+            email: req.body.email,
+            bio: req.body.bio
+        };
+
+        if (req.file) {
+            updatedProfile.profileImage = req.file.filename;
+        }
+      
+
+        // Update the user in the database
+        const updatedUser = await User.findByIdAndUpdate(req.user._id, updatedProfile, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.redirect('/users/profile');
+        // res.json({ message: 'Profile updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error('Profile update error:', error);
+        res.status(500).json({ message: 'An error occurred while updating the profile', error: error.message });
+    }
 });
 
 module.exports = router;

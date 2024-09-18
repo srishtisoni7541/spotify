@@ -18,7 +18,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/users', userRoutes);
 app.use('/music',musicRoutes);
 app.get('/',function(rew,res){
-    res.send('hello');
+res.render('index');
 })
 
 const PORT = process.env.PORT || 3000;

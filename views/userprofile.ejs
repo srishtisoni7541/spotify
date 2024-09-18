@@ -13,16 +13,28 @@
         <!-- User Profile Section -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-8 transform duration-300">
             <h2 class="text-2xl font-semibold mb-4 text-purple-600">Your Profile</h2>
-            <div id="profileInfo">
-                <p class="text-gray-600 mb-2"><strong>Name:</strong> <%= user.name %></p>
-                <p class="text-gray-600 mb-2"><strong>Email:</strong> <%= user.email %></p>
-                <% if (user.bio) { %>
-                    <p class="text-gray-600 mb-2"><strong>Bio:</strong> <%= user.bio %></p>
-                <% } %>
-                <button onclick="showEditForm()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300 mt-4">Edit Profile</button>
+            <div id="profileInfo" class="flex items-start">
+                <div class="mr-6">
+                    <img id="profilePicture" 
+                         src="<%= user.profileImage ? `/uploads/profilepic/${user.profileImage}` : '/images/default-profile.png' %>" 
+                         alt="Profile Picture" 
+                         class="w-32 h-32 rounded-full object-cover">
+                    <button onclick="showEditForm()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300 mt-4 w-full">Edit Profile</button>
+                </div>
+                <div>
+                    <p class="text-gray-600 mb-2"><strong>Name:</strong> <%= user.name %></p>
+                    <p class="text-gray-600 mb-2"><strong>Email:</strong> <%= user.email %></p>
+                    <% if (user.bio) { %>
+                        <p class="text-gray-600 mb-2"><strong>Bio:</strong> <%= user.bio %></p>
+                    <% } %>
+                </div>
             </div>
             <div id="editProfileForm" class="hidden">
-                <form onsubmit="updateProfile(event)">
+                <form onsubmit="updateProfile(event)" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="profilePicture" class="block text-gray-700 text-sm font-bold mb-2">Profile Picture:</label>
+                        <input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
                     <div class="mb-4">
                         <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
                         <input type="text" id="name" name="name" value="<%= user.name %>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -189,14 +201,10 @@
         function updateProfile(event) {
             event.preventDefault();
             const formData = new FormData(event.target);
-            const updatedProfile = Object.fromEntries(formData);
 
             fetch('/users/update-profile', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedProfile),
+                body: formData,
                 credentials: 'include'
             })
             .then(response => response.json())
@@ -209,6 +217,19 @@
                 alert('An error occurred while updating the profile');
             });
         }
+
+        // Add this function to preview the selected image
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('profilePicture');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Add event listener for file input
+        document.getElementById('profilePicture').addEventListener('change', previewImage);
     </script>
 </body>
 </html>
