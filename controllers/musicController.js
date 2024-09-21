@@ -129,25 +129,32 @@ exports.searchMusic = async (req, res) => {
 
 // Add Music to Playlist
 exports.addToPlaylist = async (req, res) => {
-  const { trackId, playlistId,playlistName } = req.body;
-  const userId=req.user._id;
-  try {
-    const playlist = await Playlist.findById(playlistId);
-    if (!playlist) {
-      return res.status(404).json({ message: 'Playlist not found' });
+    try {
+        const { trackId, playlistName } = req.body;
+        const userId = req.user._id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        let playlist = user.playlists.find(p => p.name === playlistName);
+        if (!playlist) {
+            playlist = { name: playlistName, tracks: [] };
+            user.playlists.push(playlist);
+        }
+
+        if (!playlist.tracks.includes(trackId)) {
+            playlist.tracks.push(trackId);
+            await user.save();
+            res.json({ message: 'Track added to playlist successfully' });
+        } else {
+            res.status(400).json({ message: 'Track already in playlist' });
+        }
+    } catch (error) {
+        console.error('Add to playlist error:', error);
+        res.status(500).json({ message: 'An error occurred while adding to playlist', error: error.message });
     }
-    
-    if (!playlist.tracks.includes(trackId)) {
-      playlist.tracks.push(trackId);
-      await playlist.save();
-      res.json({ message: 'Track added to playlist successfully' });
-    } else {
-      res.json({ message: 'Track already in playlist' });
-    }
-  } catch (error) {
-    console.error('Error adding track to playlist:', error);
-    res.status(500).json({ message: 'Server error while adding track to playlist' });
-  }
 };
 
 // Upload Music (for artists)
@@ -172,4 +179,24 @@ exports.uploadMusic = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Error uploading music', error: err.message });
   }
+};
+
+exports.getUserPlaylists = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId).populate({
+            path: 'playlists.tracks',
+            model: 'Track'
+        });
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        console.log('User playlists:', JSON.stringify(user.playlists, null, 2));
+        res.json({ playlists: user.playlists });
+    } catch (error) {
+        console.error('Get user playlists error:', error);
+        res.status(500).json({ message: 'An error occurred while fetching playlists', error: error.message });
+    }
 };

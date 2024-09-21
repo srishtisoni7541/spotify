@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const {deleteMusic,addMusic,addToPlaylist,searchMusic,deleteTrackFromPlaylist}=require('../controllers/musicController');
+const {deleteMusic,addMusic,addToPlaylist,searchMusic,deleteTrackFromPlaylist, deletePlaylist}=require('../controllers/musicController');
 const { authenticateToken } = require('../middlewares/auth');
 const Track = require('../models/trackschema'); // Import the Track model
 
@@ -92,6 +92,8 @@ router.post('/upload', authenticateToken, upload.single('musicFile'), async (req
 // Route to delete music
 router.get('/delete/:musicId', authenticateToken, deleteMusic);
 router.delete('/playlist/:playlistId/track/:trackId', authenticateToken, deleteTrackFromPlaylist);
+router.get('/:playlistId',authenticateToken,deletePlaylist);
+
 
 // Route to search music
 router.get('/search', searchMusic);

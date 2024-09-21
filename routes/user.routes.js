@@ -12,7 +12,7 @@ const router = express.Router();
 // Set up multer for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/') // Make sure this directory exists
+    cb(null, 'uploads/profilepic') // Make sure this directory exists
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname))
@@ -101,8 +101,8 @@ router.post('/update-profile', authenticateToken,  upload.single('profilePicture
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.redirect('/users/profile');
         // res.json({ message: 'Profile updated successfully', user: updatedUser });
+        res.redirect('/users/profile');
     } catch (error) {
         console.error('Profile update error:', error);
         res.status(500).json({ message: 'An error occurred while updating the profile', error: error.message });

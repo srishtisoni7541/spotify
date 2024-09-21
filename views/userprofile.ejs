@@ -34,6 +34,7 @@
                     <div class="mb-4">
                         <label for="profilePicture" class="block text-gray-700 text-sm font-bold mb-2">Profile Picture:</label>
                         <input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <img id="profilePicturePreview" src="<%= user.profileImage ? `/uploads/profilepic/${user.profileImage}` : '/images/default-profile.png' %>" alt="Profile Picture Preview" class="mt-2 w-32 h-32 rounded-full object-cover">
                     </div>
                     <div class="mb-4">
                         <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
@@ -218,14 +219,15 @@
             });
         }
 
-        // Add this function to preview the selected image
         function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById('profilePicture');
-                output.src = reader.result;
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePicturePreview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(event.target.files[0]);
         }
 
         // Add event listener for file input
